@@ -1,7 +1,8 @@
 language: node_js
 node_js: stable
 
-install: true
+install:
+  - npm install
 
 branches:
   only:
@@ -12,5 +13,13 @@ before_script:
   - git config --global user.email "yudan@gaoding.com"
 
 script:
-  - git push -f https://$GITHUB_KEY@github.com/$TRAVIS_REPO_SLUG.git `npm version patch -m "%s [ci skip]"`
-  - git push -f https://$GITHUB_KEY@github.com/$TRAVIS_REPO_SLUG.git HEAD:master
+  - npm run build
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file:
+    - "out/index.js"
+  skip_cleanup: true
+  on:
+    tags: false
