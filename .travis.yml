@@ -8,6 +8,10 @@ branches:
   only:
     - master
 
+before_install:
+  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" > .npmrc
+  - npm config set @gaoding:registry https://npm.huanleguang.com
+
 before_script:
   - git config --global user.name "yudan"
   - git config --global user.email "yudan@gaoding.com"
