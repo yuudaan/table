@@ -19,17 +19,17 @@ before_script:
 script:
   - npm run build
 
-
 before_deploy:
-  # Set up git user name and tag this commit
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
-  - git push --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git
+  - export VERSION_TAG=`node -p "require('./package.json').version"`
+  - git tag $VERSION_TAG
+  - git add ./out
+  - git push -f https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git `npm version patch -m "%s [ci skip]"` # 打 Tag，发布到 Github Release, 使用 [ci skip] 调过 CI， 防止死循环
+  - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master #将新版本文件推送回 Github
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  name: $TRAVIS_TAG
+  name: $VERSION_TAG
   file:
     - "out/index.js"
   skip_cleanup: true
