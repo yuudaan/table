@@ -25,5 +25,4 @@ deploy:
   file:
     - "out/index.js"
   skip_cleanup: true
-  on:
-    tags: true
+  draft: true
