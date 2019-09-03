@@ -9,9 +9,8 @@ branches:
     - master
 
 before_install:
+  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" > .npmrc
   - npm config set @gaoding:registry https://npm.huanleguang.com
-  - echo "registry=https://registry.npmjs.org/" > .npmrc
-  - echo "home=https://www.npmjs.org" > .npmrc
 
 before_script:
   - git config --global user.name "yudan"
