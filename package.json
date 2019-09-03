@@ -44,6 +44,7 @@
     "core-js": "2",
     "handsontable": "7.1.1",
     "lodash": "4.17.15",
+    "lodash.throttle": "^4.1.1",
     "onecolor": "3.1.0",
     "vue": "2.6.10",
     "vue-poster-editor": "6.9.17",
