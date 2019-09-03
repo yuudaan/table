@@ -28,7 +28,7 @@ deploy:
   draft: true
 
 after_deploy:
-  - git tag $VERSION_TAG
   - git add ./out
   - git commit -m "[skip travis] Release" # 防止死循环
+  - git tag $VERSION_TAG
   - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master #将新版本文件推送回 Github
