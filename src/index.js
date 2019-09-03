@@ -2,6 +2,7 @@ import TableCateSelect from './components/CateSelect';
 import TablePanel from './TablePanel';
 import Table from './element';
 import Thumbnail from './contextmenu/table';
+import pkg from '../package';
 
 const ElementType = 'table';
 
@@ -33,3 +34,5 @@ export const contextmenuItems = [{
     type: ElementType,
     component: Thumbnail,
 }];
+
+export const meta = pkg;
