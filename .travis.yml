@@ -26,4 +26,4 @@ deploy:
     - "out/index.js"
   skip_cleanup: true
   on:
-    tags: false
+    tags: true
