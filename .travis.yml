@@ -15,22 +15,20 @@ before_install:
 before_script:
   - git config --global user.name "yudan"
   - git config --global user.email "yudan@gaoding.com"
+  - export VERSION_TAG=`node -p "require('./package.json').version"`
 
 script:
   - npm run build
-
-before_deploy:
-  - export VERSION_TAG=`node -p "require('./package.json').version"`
-  - git tag $VERSION_TAG
-  - git add ./out
-  - git commit -m "[skip travis] Release" # 防止死循环
-  - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master #将新版本文件推送回 Github
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   name: $VERSION_TAG
-  file:
-    - "out/index.js"
   skip_cleanup: true
   draft: true
+
+after_deploy:
+  - git tag $VERSION_TAG
+  - git add ./out
+  - git commit -m "[skip travis] Release" # 防止死循环
+  - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master #将新版本文件推送回 Github
