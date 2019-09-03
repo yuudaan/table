@@ -21,13 +21,12 @@ script:
 
 
 before_deploy:
-  # Set up git user name and tag this commit
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
+  - export RELEASE_TITLE=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
+  name: $RELEASE_TITLE
   file:
     - "out/index.js"
   skip_cleanup: true
