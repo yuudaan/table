@@ -2,8 +2,8 @@ language: node_js
 node_js: stable
 
 before_install:
-  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" > .npmrc
-  - echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" > .npmrc
+  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" >> .npmrc
+  - echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" >> .npmrc
   - npm config set @gaoding:registry https://npm.huanleguang.com
   - git config --global user.name "yudan"
   - git config --global user.email "yudan@gaoding.com"
@@ -22,8 +22,6 @@ jobs:
     - stage: test                # naming the Tests stage
       name: "Unit Tests"            # names the first Tests stage job
       script: echo "Unit Tests"
-    - script: echo "Integration Tests"
-      name: "Integration Tests"     # names the second Tests stage job
 
     - stage: build
       script: npm run build
