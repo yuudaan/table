@@ -1,6 +1,15 @@
 language: node_js
 node_js: stable
 
+before_install:
+  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" > .npmrc
+  - echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" > .npmrc
+  - npm config set @gaoding:registry https://npm.huanleguang.com
+  - git config --global user.name "yudan"
+  - git config --global user.email "yudan@gaoding.com"
+  - export VERSION_TAG=`node -p "require('./package.json').version"`
+  - export PKG_NAME=`node -p "require('./package.json').version"`
+
 install:
   - npm install
 
@@ -8,29 +17,27 @@ branches:
   only:
     - master
 
-before_install:
-  - echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" > .npmrc
-  - npm config set @gaoding:registry https://npm.huanleguang.com
+jobs:
+  include:
+    - stage: "Tests"                # naming the Tests stage
+      name: "Unit Tests"            # names the first Tests stage job
+      script: echo "Unit Tests"
+    - script: echo "Integration Tests"
+      name: "Integration Tests"     # names the second Tests stage job
 
-before_script:
-  - git config --global user.name "yudan"
-  - git config --global user.email "yudan@gaoding.com"
-  - export VERSION_TAG=`node -p "require('./package.json').version"`
-  - export PKG_NAME=`node -p "require('./package.json').version"`
+    - stage: "Build"
+      script: npm run build
 
-script:
-  - npm run build
-  - git add ./out
-  - git commit -m "[skip travis] Release" # 防止死循环
-  - git tag $VERSION_TAG # jsDelivr 按 tag 更新
-  - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master # 将新版本文件推送回 Github
+    - stage: "Deploy"
+      name: "Deploy to Github"
+      script:
+        - git add ./out
+        - git commit -m "[skip travis] Release" # 防止死循环
+        - git tag $VERSION_TAG # jsDelivr 按 tag 更新
+        - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master # 将新版本文件推送回 Github
+        - curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
 
-deploy:
-  provider: npm
-  email: "yudan@gaoding.com"
-  api_key: ${PUBLISH_TOKEN}
-  skip_cleanup: true
-
-after_deploy:
-  - curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
-  - curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
+    - name: "Deploy to NPM"
+      script:
+        - npm publish
+        - curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
