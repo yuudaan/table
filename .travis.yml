@@ -19,16 +19,16 @@ branches:
 
 jobs:
   include:
-    - stage: "Tests"                # naming the Tests stage
+    - stage: test                # naming the Tests stage
       name: "Unit Tests"            # names the first Tests stage job
       script: echo "Unit Tests"
     - script: echo "Integration Tests"
       name: "Integration Tests"     # names the second Tests stage job
 
-    - stage: "Build"
+    - stage: build
       script: npm run build
 
-    - stage: "Deploy"
+    - stage: deploy
       name: "Deploy to Github"
       script:
         - git add ./out
@@ -41,3 +41,9 @@ jobs:
       script:
         - npm publish
         - curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
+
+stages:
+  - test
+  - build
+  - name: deploy
+    if: branch = master
