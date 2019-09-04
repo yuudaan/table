@@ -32,5 +32,7 @@ deploy:
   skip_cleanup: true
 
 after_deploy:
-  - curl https://cdn.jsdelivr.net/gh/$TRAVIS_REPO_SLUG@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
+  - echo "https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js"
+  - curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
+  - echo "https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js"
   - curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
