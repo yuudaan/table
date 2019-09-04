@@ -19,29 +19,23 @@ branches:
 
 jobs:
   include:
-    - stage: test                # naming the Tests stage
-      name: "Unit Tests"            # names the first Tests stage job
-      script: echo "Unit Tests"
+#    - stage: test                # naming the Tests stage
+#      name: "Unit Tests"            # names the first Tests stage job
+#      script: echo "Unit Tests"
 
-    - stage: build
-      script: npm run build
-
-    - stage: deploy
+    - stage: Deploy
       name: "Deploy to Github"
       script:
+        - npm run build
         - git add ./out
         - git commit -m "[skip travis] Release" # 防止死循环
         - git tag $VERSION_TAG # jsDelivr 按 tag 更新
         - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master # 将新版本文件推送回 Github
         - curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
-
-    - name: "Deploy to NPM"
-      script:
         - npm publish
         - curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js # 刷新 CDN
 
 stages:
-  - test
-  - build
+#  - test
   - name: deploy
     if: branch = master
