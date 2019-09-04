@@ -31,10 +31,10 @@ script:
   # direct push to master
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
       git add ./out &&
-      git commit -m "[skip travis] Release" && # 防止死循环
-      git tag $VERSION_TAG &&# jsDelivr 按 tag 更新
-      git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master && # 将新版本文件推送回 Github
-      curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js && # 刷新 CDN
+      git commit -m "[skip travis] Release" &&
+      git tag $VERSION_TAG &&
+      git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master &&
+      curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js &&
       npm publish &&
-      curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js; # 刷新 CDN
+      curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js;
     fi
