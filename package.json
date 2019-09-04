@@ -1,6 +1,6 @@
 {
   "name": "@yudan-inc/table",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "publishConfig": {
     "access": "public"
   },
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --progress --config webpack.config.js",
     "start": "npm run dev",
-    "build": "rimraf ./out && cross-env NODE_ENV=production webpack --progress --color --bail --config ./webpack.config.js",
+    "build": "rimraf ./out && cross-env NODE_ENV=production webpack --color --bail --config ./webpack.config.js",
     "analyzer": "cross-env ANALYZER=true npm run build",
     "build:publish": "cross-env PUBLISH=true npm run build"
   },
