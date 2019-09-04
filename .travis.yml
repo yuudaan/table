@@ -22,4 +22,4 @@ script:
   - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/lint-pr.sh; fi
   - npm run build
   # direct push to master
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then ./script/deploy.sh; fi
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/deploy.sh; fi
