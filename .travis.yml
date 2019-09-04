@@ -18,23 +18,8 @@ branches:
     - master
 
 script:
-  # if pull request, todo 检查 PR 格式
-  - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      echo "check pr";
-    fi
-
-  # todo 运行测试
-  - echo "Run tests"
-
+  # if pull request
+  - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/lint-pr.sh; fi
   - npm run build
-
   # direct push to master
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      git add ./out &&
-      git commit -m "[skip travis] Release" &&
-      git tag $VERSION_TAG &&
-      git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master &&
-      curl https://cdn.jsdelivr.net/gh/${TRAVIS_REPO_SLUG}@$VERSION_TAG/out/index.js > temp.js &&
-      npm publish &&
-      curl https://cdn.jsdelivr.net/npm/$PKG_NAME@$VERSION_TAG/out/index.js > temp.js;
-    fi
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then ./script/deploy.sh; fi
