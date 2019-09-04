@@ -2,7 +2,6 @@ src/
 .travis.yml
 babel.config.js
 index.html
-index.js
 loader.js
 postcss.config.js
 webpack.config.js
