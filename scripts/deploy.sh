@@ -1,3 +1,5 @@
+#!/bin/bash -v
+
 git add ./out
 git commit -m "[skip travis] Release"
 git tag $VERSION_TAG
