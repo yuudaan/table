@@ -19,16 +19,13 @@ before_script:
 
 script:
   - npm run build
-
-deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  name: $VERSION_TAG
-  skip_cleanup: true
-  draft: true
-
-after_deploy:
   - git add ./out
   - git commit -m "[skip travis] Release" # 防止死循环
   - git tag $VERSION_TAG
   - git push -f --tags https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git HEAD:master #将新版本文件推送回 Github
+
+deploy:
+  provider: npm
+  email: "yudan@gaoding.com"
+  api_key: ${PUBLISH_TOKEN}
+  skip_cleanup: true
