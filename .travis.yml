@@ -8,7 +8,7 @@ before_install:
   - git config --global user.name "yudan"
   - git config --global user.email "yudan@gaoding.com"
   - export VERSION_TAG=`node -p "require('./package.json').version"`
-  - export PKG_NAME=`node -p "require('./package.json').version"`
+  - export PKG_NAME=`node -p "require('./package.json').name"`
 
 install:
   - npm install
