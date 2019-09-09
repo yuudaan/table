@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - "10"
+
+branches:
+  only:
+    - master
+
+steps:
+  - script: |
+      npm install -g bower
+      echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" >> .npmrc
+      echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" >> .npmrc
+      npm config set @gaoding:registry https://npm.huanleguang.com
+      git config --global user.name "yudan"
+      git config --global user.email "yudan@gaoding.com"
+      export VERSION_TAG=`node -p "require('./package.json').version"`
+      export PKG_NAME=`node -p "require('./package.json').name"`
+    displayName: 'Config ENV'
+  - script: |
+      npm install
+    displayName: 'Install dependencies'
+  # if pull request
+  - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/lint-pr.sh; fi
+  - npm run build
+  # direct push to master
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/deploy.sh; fi

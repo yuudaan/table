@@ -1,0 +1,42 @@
+<div
+    class="editor-element"
+    :class="[
+        'editor-element-' + model.type,
+        model.lock ? 'editor-element-lock' : '',
+        model.hidden ? 'editor-element-hidden' : '',
+        model.frozen ? 'editor-element-frozen' : '',
+        model.$loaded ? '' : 'editor-element-loading',
+        model.$selected ? 'editor-element-selected' : '',
+        model.$editing ? 'editor-element-editing' : '',
+        errorMessage ? 'editor-element-error' : ''
+    ]"
+    :style="boxStyle"
+>
+    <div class="element-main">
+        <DesignTable
+            :element="element"
+            :data="model.gridData"
+            :theme="model.gridTheme"
+            :options="model.gridOptions"
+        />
+    </div>
+
+    <div class="element-tips" v-if="!model.$loaded || errorMessage">
+        <div class="element-tips-loading" v-if="!model.$loaded">
+            <i class="fa fa-spin fa-spinner"></i><span>Loading...</span>
+        </div>
+        <div class="element-tips-error" v-if="errorMessage">
+            <i class="fa fa-info-circle"></i><span>{{errorMessage}}</span>
+        </div>
+    </div>
+
+    <div
+        v-if="isShowBlink"
+        class="element-blink"
+        @animationend="hideBlink"
+    >
+    </div>
+    
+    <i class="border-before" :style="{zoom: borderZoom}"></i>
+    
+</div>
