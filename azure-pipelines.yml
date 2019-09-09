@@ -1,0 +1,36 @@
+
+trigger:
+  - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+      checkLatest: false
+
+  - script: |
+      set -x
+      echo "//npm.huanleguang.com/:_authToken=${NPM_TOKEN}" >> .npmrc
+      echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" >> .npmrc
+      npm config set @gaoding:registry https://npm.huanleguang.com
+      git config --global user.name "yudan"
+      git config --global user.email "yudan@gaoding.com"
+      export VERSION_TAG=`node -p "require('./package.json').version"`
+      export PKG_NAME=`node -p "require('./package.json').name"`
+    displayName: 'Config ENV'
+  - script: |
+      npm install
+    displayName: 'Install dependencies'
+
+  - script: bash ./scripts/lint-pr.sh
+    condition: and(failed(), eq(variables['Build.Reason'], 'PullRequest'))
+    displayName: 'PR Check'
+
+  - script: npm run build
+    displayName: 'Building'
+
+  - script: bash ./scripts/deploy.sh
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), failed())
