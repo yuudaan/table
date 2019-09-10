@@ -2,6 +2,7 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 const OSS = require('ali-oss');
+const { execSync } = require('child_process');
 const { name, main: entry } = require('../package');
 
 function getCurrentBranchName(p = process.cwd()) {
@@ -42,12 +43,15 @@ async function main() {
         bucket: process.env.CDN_BUCKET,
     });
 
+    execSync('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', { stdio: 'inherit' });
+
     const { PKG_NAME, VERSION_TAG } = process.env;
 
     const file = path.relative(process.cwd(), entry);
     const result = await client.put(`odyssey-plugin/${name.replace('@', '')}/${VERSION_TAG}/${file}`, entry);
     console.log('success', result.url);
 
+    e;
     await axios.request({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
