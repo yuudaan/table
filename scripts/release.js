@@ -1,7 +1,7 @@
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 
 function getCurrentBranchName(p = process.cwd()) {
     const gitHeadPath = `${p}/.git/HEAD`;
@@ -36,29 +36,20 @@ async function main() {
     //     console.error(`stderr: ${stderr}`);
     // });
 
-    exec('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
-            throw new Error(error);
-            return;
-        }
-
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-    });
+    execSync('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', { stdio: 'inherit' });
 
     const { PKG_NAME, VERSION_TAG } = process.env;
 
-    await axios.request({
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        baseUrl: BranchToUrl[branch],
-        url: '/version',
-        data: { name: PKG_NAME, version: VERSION_TAG }
-    });
+    // await axios.request({
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     baseUrl: BranchToUrl[branch],
+    //     url: '/version',
+    //     data: { name: PKG_NAME, version: VERSION_TAG }
+    // });
 }
 
 main().catch(err => {
-    console.error('出错了: ', err.message);
+    console.error('出错了: ', e);
     process.exit(1);
 });
