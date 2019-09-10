@@ -48,11 +48,13 @@ async function main() {
 
     const { PKG_NAME, VERSION_TAG } = process.env;
 
+    console.log(`${BranchToUrl[branch]}/version`);
     await axios.request({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         url: `${BranchToUrl[branch]}/version`,
-        data: { name: PKG_NAME, version: VERSION_TAG }
+        data: { name: PKG_NAME, version: VERSION_TAG },
+        timeout: 5000,
     });
 }
 
