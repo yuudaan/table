@@ -43,7 +43,7 @@ async function main() {
         bucket: process.env.CDN_BUCKET,
     });
 
-    execSync('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', { stdio: 'inherit' });
+    // execSync('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', { stdio: 'inherit' });
 
     const { PKG_NAME, VERSION_TAG } = process.env;
 
@@ -51,7 +51,6 @@ async function main() {
     const result = await client.put(`odyssey-plugin/${name.replace('@', '')}/${VERSION_TAG}/${file}`, entry);
     console.log('success', result.url);
 
-    e;
     await axios.request({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
