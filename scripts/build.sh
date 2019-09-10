@@ -1,6 +1,6 @@
 #!/bin/bash -v
 
-echo "//npm.huanleguang.com/:_authToken=\${NPM_TOKEN}" >> .npmrc
+echo "//npm.huanleguang.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 echo "//registry.npmjs.org/:_authToken=${PUBLISH_TOKEN}" >> .npmrc
 npm config set @gaoding:registry https://npm.huanleguang.com
 git config --global user.name "yudan"
