@@ -42,13 +42,12 @@ async function main() {
         bucket: process.env.CDN_BUCKET,
     });
 
-    const file = path.relative(process.cwd(), entry);
-    const result = await client.put(`odyssey-plugin/${name}/${file}`, entry);
-    console.log('success', result.url);
-
     const { PKG_NAME, VERSION_TAG } = process.env;
 
-    console.log(`${BranchToUrl[branch]}/version`);
+    const file = path.relative(process.cwd(), entry);
+    const result = await client.put(`odyssey-plugin/${name.replace('@', '')}/${VERSION_TAG}/${file}`, entry);
+    console.log('success', result.url);
+
     await axios.request({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
