@@ -1,26 +1,53 @@
-var http = require('http');
+const axios = require('axios');
+const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
 
-var options = {
-    method: 'POST',
-    host: '120.25.224.35',
-    port: '8081',
-    path: '/version',
-    headers: { 'Content-Type': 'application/json' }
+function getCurrentBranchName(p = process.cwd()) {
+    const gitHeadPath = `${p}/.git/HEAD`;
+
+    return fs.existsSync(p) ?
+        fs.existsSync(gitHeadPath) ?
+            fs.readFileSync(gitHeadPath, 'utf-8').trim().split('/')[2] :
+            getCurrentBranchName(path.resolve(p, '..')) :
+        false;
+}
+
+const BranchToUrl = {
+    master: 'http://odyssey-plugin.dev.gaoding.com:7070',
+    release: 'http://odyssey-plugin.dev.gaoding.com:7070',
+    dev: 'http://odyssey-plugin.dev.gaoding.com:7070',
 };
 
-var req = http.request(options, function (res) {
-    var chunks = [];
+async function main() {
+    const branch = getCurrentBranchName();
+    if (!BranchToUrl[branch]) {
+        throw new Error('Current branch is not a branch to release.');
+    }
 
-    res.on('data', function (chunk) {
-        chunks.push(chunk);
+    exec('base ./deploy.sh', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            throw new Error(error);
+            return;
+        }
+
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
     });
 
-    res.on('end', function () {
-        var body = Buffer.concat(chunks);
-        console.log(body.toString());
+    const { PKG_NAME, VERSION_TAG } = process.env;
+
+    await axios.request({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        baseUrl: BranchToUrl[branch],
+        url: '/version',
+        data: { name: PKG_NAME, version: VERSION_TAG }
     });
+}
+
+main().catch(err => {
+    console.error('出错了: ', err.message);
+    process.exit(1);
 });
-
-const { PKG_NAME, VERSION_TAG } = process.env;
-req.write(JSON.stringify({ name: PKG_NAME, version: VERSION_TAG }));
-req.end();
