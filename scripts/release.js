@@ -25,28 +25,16 @@ async function main() {
         throw new Error('Current branch is not a branch to release.');
     }
 
-    // exec('bash ./scripts/deploy.sh', (error, stdout, stderr) => {
-    //     if (error) {
-    //         console.error(`exec error: ${error}`);
-    //         throw new Error(error);
-    //         return;
-    //     }
-    //
-    //     console.log(`stdout: ${stdout}`);
-    //     console.error(`stderr: ${stderr}`);
-    // });
-
-    execSync('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', { stdio: 'inherit' });
+    execSync('bash ./scripts/deploy.sh', { stdio: 'inherit' });
 
     const { PKG_NAME, VERSION_TAG } = process.env;
 
-    // await axios.request({
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     baseUrl: BranchToUrl[branch],
-    //     url: '/version',
-    //     data: { name: PKG_NAME, version: VERSION_TAG }
-    // });
+    await axios.request({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        url: `${BranchToUrl[branch]}/version`,
+        data: { name: PKG_NAME, version: VERSION_TAG }
+    });
 }
 
 main().catch(err => {
