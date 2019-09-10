@@ -25,16 +25,16 @@ async function main() {
         throw new Error('Current branch is not a branch to release.');
     }
 
-    exec('bash ./scripts/deploy.sh', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
-            throw new Error(error);
-            return;
-        }
-
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-    });
+    // exec('bash ./scripts/deploy.sh', (error, stdout, stderr) => {
+    //     if (error) {
+    //         console.error(`exec error: ${error}`);
+    //         throw new Error(error);
+    //         return;
+    //     }
+    //
+    //     console.log(`stdout: ${stdout}`);
+    //     console.error(`stderr: ${stderr}`);
+    // });
 
     exec('curl --connect-timeout 2 http://odyssey-plugin.dev.gaoding.com:7070/status', (error, stdout, stderr) => {
         if (error) {
