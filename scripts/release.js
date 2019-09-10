@@ -1,8 +1,8 @@
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
-const { execSync } = require('child_process');
-const gitRemoteOriginUrl = require('git-remote-origin-url');
+const OSS = require('ali-oss');
+const { name, main: entry } = require('../package');
 
 function getCurrentBranchName(p = process.cwd()) {
     const gitHeadPath = `${p}/.git/HEAD`;
@@ -21,20 +21,30 @@ const BranchToUrl = {
 };
 
 async function main() {
-
     const branch = getCurrentBranchName();
     if (!BranchToUrl[branch]) {
         throw new Error('Current branch is not a branch to release.');
     }
 
-    execSync('bash ./scripts/deploy.sh', { stdio: 'inherit' });
-    const addr = await gitRemoteOriginUrl();
-    const pattern = /\w+@(.+)/i;
-    const result = pattern.exec(addr);
-    if (!result) {
-        throw new Error('Unexpected git remote addr.');
-    }
-    execSync(`git push -f --tags https://$GITHUB_TOKEN@${result[1]} HEAD:master`, { stdio: 'inherit' });
+    // execSync('bash ./scripts/deploy.sh', { stdio: 'inherit' });
+    // const addr = await gitRemoteOriginUrl();
+    // const pattern = /\w+@(.+)/i;
+    // const result = pattern.exec(addr);
+    // if (!result) {
+    //     throw new Error('Unexpected git remote addr.');
+    // }
+    // execSync(`git push -f --tags https://$GITHUB_TOKEN@${result[1]} HEAD:master`, { stdio: 'inherit' });
+
+    const client = new OSS({
+        region: process.env.OSS_REGION,
+        accessKeyId: process.env.OSS_ACCESS_KEY,
+        accessKeySecret: process.env.OSS_SECRET_KEY,
+        bucket: process.env.CDN_BUCKET,
+    });
+
+    const file = path.relative(process.cwd(), entry);
+    const result = await client.put(`odyssey-plugin/${name}/${file}`, entry);
+    console.log('success', result.url);
 
     const { PKG_NAME, VERSION_TAG } = process.env;
 
