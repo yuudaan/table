@@ -10,5 +10,5 @@ export PKG_NAME=`node -p "require('./package.json').name"`
 
 npm install
 npm run build
-node ./script/release.js
+node ./scripts/release.js
 

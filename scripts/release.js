@@ -25,7 +25,7 @@ async function main() {
         throw new Error('Current branch is not a branch to release.');
     }
 
-    exec('base ./deploy.sh', (error, stdout, stderr) => {
+    exec('bash ./deploy.sh', (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
             throw new Error(error);
