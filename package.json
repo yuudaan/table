@@ -51,7 +51,7 @@
     "@handsontable/vue": "4.1.0",
     "core-js": "2",
     "handsontable": "7.1.1",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "lodash.throttle": "^4.1.1",
     "onecolor": "3.1.0",
     "vue": "2.6.10",
